@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="http://sargue.net/jsptags/time" prefix="javatime" %>
+<%@ taglib prefix="javatime" uri="http://sargue.net/jsptags/time" %>
 <style>
   .redfont {
     color: red;
@@ -33,10 +33,10 @@
   <c:forEach items="${meals}" var="meal">
     <tr class="${meal.excess ? 'redfont' : 'greenfont'}">
       <td><javatime:format pattern="yyyy-MM-dd HH:mm" value="${meal.dateTime}"/></td>
-      <td><c:out value="${meal.description}" /></td>
-      <td><c:out value="${meal.calories}" /></td>
-      <td><a href="meals?action=edit&mealId=<c:out value="${meal.id}"/>">Update</a></td>
-      <td><a href="meals?action=delete&mealId=<c:out value="${meal.id}"/>">Delete</a></td>
+      <td>${meal.description}</td>
+      <td>${meal.calories}</td>
+      <td><a href="meals?action=edit&mealid=${meal.id}">Update</a></td>
+      <td><a href="meals?action=delete&mealid=${meal.id}">Delete</a></td>
     </tr>
   </c:forEach>
   </tbody>

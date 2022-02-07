@@ -11,12 +11,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MealDAOImpl implements MealDAO{
-    private static final Map<Integer, Meal> MEAL_REPOSITORY_MAP = new ConcurrentHashMap<>();
+public class MealDaoInMemory implements MealDao {
+    private final Map<Integer, Meal> repositoryMap = new ConcurrentHashMap<>();
 
-    private static final AtomicInteger MEAL_ID_HOLDER = new AtomicInteger();
+    private final AtomicInteger idCounter = new AtomicInteger();
 
-    static {
+    {
         List<Meal> meals = Arrays.asList(
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500),
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000),
@@ -26,36 +26,39 @@ public class MealDAOImpl implements MealDAO{
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500),
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
         );
-
         for (Meal meal : meals) {
-            meal.setId(MEAL_ID_HOLDER.incrementAndGet());
-            MEAL_REPOSITORY_MAP.put(meal.getId(), meal);
+            create(meal);
         }
     }
 
     @Override
     public List<Meal> readAll() {
-        return new ArrayList<>(MEAL_REPOSITORY_MAP.values());
+        return new ArrayList<>(repositoryMap.values());
     }
 
     @Override
-    public Meal read(Integer id) {
-        return MEAL_REPOSITORY_MAP.get(id);
+    public Meal read(int id) {
+        return repositoryMap.get(id);
     }
 
     @Override
-    public void create(Meal meal) {
-        meal.setId(MEAL_ID_HOLDER.incrementAndGet());
-        MEAL_REPOSITORY_MAP.put(meal.getId(), meal);
+    public Meal create(Meal meal) {
+        meal.setId(idCounter.incrementAndGet());
+        repositoryMap.put(meal.getId(), meal);
+        return meal;
     }
 
     @Override
-    public void update(Meal meal) {
-        MEAL_REPOSITORY_MAP.put(meal.getId(), meal);
+    public Meal update(Meal meal) {
+        if (!repositoryMap.containsKey(meal.getId())) {
+            throw new RuntimeException();
+        }
+        repositoryMap.put(meal.getId(), meal);
+        return meal;
     }
 
     @Override
-    public void delete(Integer id) {
-        MEAL_REPOSITORY_MAP.remove(id);
+    public void delete(int id) {
+        repositoryMap.remove(id);
     }
 }
