@@ -21,13 +21,13 @@ import java.util.Objects;
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
-    private ConfigurableApplicationContext appcntx;
+    private ConfigurableApplicationContext appCntx;
     private MealRestController mealRestController;
 
     @Override
     public void init() {
-        appcntx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
-        mealRestController = appcntx.getBean(MealRestController.class);
+        appCntx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        mealRestController = appCntx.getBean(MealRestController.class);
     }
 
     @Override
@@ -67,10 +67,10 @@ public class MealServlet extends HttpServlet {
                 String startTime = request.getParameter("startTime");
                 String endTime = request.getParameter("endTime");
                 request.setAttribute("meals",
-                        mealRestController.getAllFilteredByDate(startDate.isEmpty() ? null : LocalDate.parse(startDate),
-                                endDate.isEmpty() ? null : LocalDate.parse(endDate),
-                                startTime.isEmpty() ? null : LocalTime.parse(startTime),
-                                endTime.isEmpty() ? null : LocalTime.parse(endTime)));
+                        mealRestController.getAllFilteredByDate(startDate == null || startDate.isEmpty() ? null : LocalDate.parse(startDate),
+                                endDate == null || endDate.isEmpty() ? null : LocalDate.parse(endDate),
+                                startTime == null || startTime.isEmpty() ? null : LocalTime.parse(startTime),
+                                endTime == null || endTime.isEmpty() ? null : LocalTime.parse(endTime)));
 
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
@@ -99,6 +99,6 @@ public class MealServlet extends HttpServlet {
 
     @Override
     public void destroy() {
-        appcntx.close();
+        appCntx.close();
     }
 }

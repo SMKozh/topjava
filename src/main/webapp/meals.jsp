@@ -20,6 +20,31 @@
 <section>
     <h3><a href="index.html">Home</a></h3>
     <hr/>
+    <form method="get" action="meals?action=filter">
+        <input type="hidden" name="action" value="filter">
+        <table>
+            <tr>
+                <th width="200">От даты (включая)</th>
+                <th width="200">До даты (включая)</th>
+                <th width="200">От времени (включая)</th>
+                <th width="200">До времени (исключая)</th>
+            </tr>
+            <tr>
+                <th><input type="date" value="${param.startDate}" name="startDate"></th>
+                <th><input type="date" value="${param.endDate}" name="endDate"></th>
+                <th><input type="time" value="${param.startTime}" name="startTime"></th>
+                <th><input type="time" value="${param.endTime}" name="endTime"></th>
+            </tr>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>
+                    <button type="submit">Отфильтровать</button>
+                </th>
+            </tr>
+        </table>
+    </form>
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
@@ -50,31 +75,6 @@
         </c:forEach>
     </table>
     <br/>
-    <form method="get" action="meals?action=filter">
-        <input type="hidden" name="action" value="filter">
-        <table>
-            <tr>
-                <th width="200">От даты (включая)</th>
-                <th width="200">До даты (включая)</th>
-                <th width="200">От времени (включая)</th>
-                <th width="200">До времени (исключая)</th>
-            </tr>
-            <tr>
-                <th><input type="date" value="${meal.dateTime}" name="startDate"></th>
-                <th><input type="date" value="${meal.dateTime}" name="endDate"></th>
-                <th><input type="time" value="${meal.dateTime}" name="startTime"></th>
-                <th><input type="time" value="${meal.dateTime}" name="endTime"></th>
-            </tr>
-            <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th>
-                    <button type="submit">Отфильтровать</button>
-                </th>
-            </tr>
-        </table>
-    </form>
 </section>
 </body>
 </html>

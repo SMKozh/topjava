@@ -10,10 +10,7 @@ public class SecurityUtil {
     }
 
     public static int authUserId() {
-        if (authUserId != 0) {
-            return authUserId;
-        }
-        return 1;
+        return authUserId;
     }
 
     public static int authUserCaloriesPerDay() {

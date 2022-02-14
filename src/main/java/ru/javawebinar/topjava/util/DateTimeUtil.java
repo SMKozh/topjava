@@ -7,16 +7,7 @@ public class DateTimeUtil {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public static <T extends Comparable<T>> boolean isBetweenHalfOpen(T checkValue, T startValue, T endValue) {
-        if (startValue == null && endValue != null) {
-            return checkValue.compareTo(endValue) < 0;
-        }
-        if (startValue != null && endValue == null) {
-            return checkValue.compareTo(startValue) >= 0;
-        }
-        if (startValue == null && endValue == null) {
-            return true;
-        }
-        return checkValue.compareTo(startValue) >= 0 && checkValue.compareTo(endValue) < 0;
+        return (startValue == null || checkValue.compareTo(startValue) >= 0) && (endValue == null || checkValue.compareTo(endValue) < 0);
     }
 
     public static String toString(LocalDateTime ldt) {
