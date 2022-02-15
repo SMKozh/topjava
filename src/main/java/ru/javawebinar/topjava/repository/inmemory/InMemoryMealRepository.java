@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 @Repository
 public class InMemoryMealRepository implements MealRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryMealRepository.class);
-    private static final Map<Integer, Meal> EMPTY_MAP = Collections.emptyMap();
     private final Map<Integer, Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
 
@@ -34,25 +33,28 @@ public class InMemoryMealRepository implements MealRepository {
     public Meal save(Meal meal, int userId) {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
-            repository.putIfAbsent(userId, new ConcurrentHashMap<>());
-            repository.get(userId).put(meal.getId(), meal);
+            repository.computeIfAbsent(userId, integer -> new ConcurrentHashMap<>()).put(meal.getId(), meal);
             log.info("save {}", meal);
             return meal;
         }
         // handle case: update, but not present in storage
-        return repository.get(userId).computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        log.info("save {}", meal);
+        Map<Integer, Meal> userMealMap = repository.get(userId);
+        return userMealMap == null ? null : userMealMap.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
     @Override
     public boolean delete(int id, int userId) {
         log.info("delete {}", id);
-        return repository.getOrDefault(userId, EMPTY_MAP).remove(id) != null;
+        Map<Integer, Meal> userMealMap = repository.get(userId);
+        return userMealMap != null && userMealMap.remove(id) != null;
     }
 
     @Override
     public Meal get(int id, int userId) {
         log.info("get {}", id);
-        return repository.getOrDefault(userId, EMPTY_MAP).get(id);
+        Map<Integer, Meal> userMealMap = repository.get(userId);
+        return userMealMap == null ? null : userMealMap.get(id);
     }
 
     @Override
@@ -69,7 +71,8 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     private List<Meal> getByPredicate(int userId, Predicate<Meal> filter) {
-        return repository.getOrDefault(userId, EMPTY_MAP).values().stream()
+        Map<Integer, Meal> userMealMap = repository.get(userId);
+        return userMealMap == null ? Collections.emptyList() : userMealMap.values().stream()
                 .filter(filter)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
