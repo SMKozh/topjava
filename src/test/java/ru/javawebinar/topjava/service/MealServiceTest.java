@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.repository.jdbc;
+package ru.javawebinar.topjava.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +10,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
@@ -28,7 +27,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 })
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-public class JdbcMealRepositoryTest {
+public class MealServiceTest {
 
     static {
 //         Only for postgres driver logging
@@ -54,7 +53,6 @@ public class JdbcMealRepositoryTest {
         Meal created = getNew();
         created.setDateTime(userMeal1.getDateTime());
         assertThrows(DataAccessException.class, () -> service.create(created, USER_ID));
-
     }
 
     @Test
@@ -69,17 +67,29 @@ public class JdbcMealRepositoryTest {
     }
 
     @Test
+    public void deleteNotMyMeal() {
+        assertThrows(NotFoundException.class, () -> service.delete(adminMeal1.getId(), USER_ID));
+    }
+
+    @Test
     public void update() {
         Meal updated = getUpdated();
         Integer updatedId = updated.getId();
         service.update(updated, USER_ID);
-        assertMatch(service.get(updatedId, USER_ID), updated);
+        assertMatch(service.get(updatedId, USER_ID), getUpdated());
     }
 
     @Test
     public void updateNotFound() {
         Meal updated = getUpdated();
         updated.setId(NOT_FOUND);
+        assertThrows(NotFoundException.class, () -> service.update(updated, USER_ID));
+    }
+
+    @Test
+    public void updateNotMyMeal() {
+        Meal updated = getUpdated();
+        updated.setId(adminMeal1.getId());
         assertThrows(NotFoundException.class, () -> service.update(updated, USER_ID));
     }
 
@@ -92,6 +102,11 @@ public class JdbcMealRepositoryTest {
     @Test
     public void getNotFound() {
         assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND, USER_ID));
+    }
+
+    @Test
+    public void getNotMyMeal() {
+        assertThrows(NotFoundException.class, () -> service.get(adminMeal1.getId(), USER_ID));
     }
 
     @Test
