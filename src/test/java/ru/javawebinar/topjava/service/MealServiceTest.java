@@ -18,7 +18,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
-import static ru.javawebinar.topjava.UserTestData.NOT_FOUND;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 @ContextConfiguration({
@@ -119,5 +118,11 @@ public class MealServiceTest {
     public void getBetweenHalfOpen() {
         List<Meal> meals = service.getBetweenInclusive(LocalDate.of(2020, Month.JANUARY, 30), LocalDate.of(2020, Month.JANUARY, 30), USER_ID);
         assertMatch(meals, userMeal3, userMeal2, userMeal1);
+    }
+
+    @Test
+    public void getBetweenHalfOpenWithNull() {
+        List<Meal> meals = service.getBetweenInclusive(null,null, USER_ID);
+        assertMatch(meals, userMeal7, userMeal6, userMeal5, userMeal4, userMeal3, userMeal2, userMeal1);
     }
 }

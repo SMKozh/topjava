@@ -18,6 +18,7 @@ public class MealTestData {
     public static final Meal userMeal6 = new Meal(START_SEQ + 8, LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500);
     public static final Meal userMeal7 = new Meal(START_SEQ + 9, LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410);
     public static final Meal adminMeal1 = new Meal(START_SEQ + 10, LocalDateTime.of(2022, Month.FEBRUARY, 15, 10, 0), "Завтрак для admin", 500);
+    public static final int NOT_FOUND = 5;
 
     public static Meal getNew() {
         return new Meal(LocalDateTime.of(2022, Month.FEBRUARY, 1, 15, 0), "new Meal", 1000);
