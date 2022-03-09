@@ -15,13 +15,13 @@ import java.util.List;
 
 public abstract class AbstractJdbcMealRepository<T> implements MealRepository {
 
-    protected static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
+    private static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
-    protected final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    protected final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    protected final SimpleJdbcInsert insertMeal;
+    private final SimpleJdbcInsert insertMeal;
 
     public AbstractJdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.insertMeal = new SimpleJdbcInsert(jdbcTemplate)
@@ -55,8 +55,6 @@ public abstract class AbstractJdbcMealRepository<T> implements MealRepository {
         return meal;
     }
 
-    protected abstract T getDateTimeForDb(LocalDateTime dateTime);
-
     @Override
     public boolean delete(int id, int userId) {
         return jdbcTemplate.update("DELETE FROM meals WHERE id=? AND user_id=?", id, userId) != 0;
@@ -81,4 +79,6 @@ public abstract class AbstractJdbcMealRepository<T> implements MealRepository {
                 "SELECT * FROM meals WHERE user_id=?  AND date_time >=  ? AND date_time < ? ORDER BY date_time DESC",
                 ROW_MAPPER, userId, getDateTimeForDb(startDateTime), getDateTimeForDb(endDateTime));
     }
+
+    protected abstract T getDateTimeForDb(LocalDateTime dateTime);
 }

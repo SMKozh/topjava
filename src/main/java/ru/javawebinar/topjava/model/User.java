@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.model;
 
-import org.hibernate.annotations.Fetch;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.util.CollectionUtils;
 
