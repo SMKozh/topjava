@@ -16,7 +16,7 @@ public interface UserRepository {
 
     // null if not found
     default User getWithMeals(int id) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     // null if not found

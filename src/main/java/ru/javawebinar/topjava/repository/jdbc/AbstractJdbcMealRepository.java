@@ -13,7 +13,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public abstract class AbstractJdbcMealRepository implements MealRepository {
+public abstract class AbstractJdbcMealRepository<T> implements MealRepository {
 
     protected static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
@@ -33,9 +33,14 @@ public abstract class AbstractJdbcMealRepository implements MealRepository {
     }
 
     @Override
-    public abstract Meal save(Meal meal, int userId);
+    public Meal save(Meal meal, int userId) {
+        MapSqlParameterSource map = new MapSqlParameterSource()
+                .addValue("id", meal.getId())
+                .addValue("description", meal.getDescription())
+                .addValue("calories", meal.getCalories())
+                .addValue("date_time", getDateTimeForDb(meal.getDateTime()))
+                .addValue("user_id", userId);
 
-    protected Meal saveLogic(Meal meal, int userId, MapSqlParameterSource map) {
         if (meal.isNew()) {
             Number newId = insertMeal.executeAndReturnKey(map);
             meal.setId(newId.intValue());
@@ -49,6 +54,8 @@ public abstract class AbstractJdbcMealRepository implements MealRepository {
         }
         return meal;
     }
+
+    protected abstract T getDateTimeForDb(LocalDateTime dateTime);
 
     @Override
     public boolean delete(int id, int userId) {
@@ -69,5 +76,9 @@ public abstract class AbstractJdbcMealRepository implements MealRepository {
     }
 
     @Override
-    public abstract List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId);
+    public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
+        return jdbcTemplate.query(
+                "SELECT * FROM meals WHERE user_id=?  AND date_time >=  ? AND date_time < ? ORDER BY date_time DESC",
+                ROW_MAPPER, userId, getDateTimeForDb(startDateTime), getDateTimeForDb(endDateTime));
+    }
 }
