@@ -11,7 +11,7 @@
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
     <hr>
-    <h2>${meal.id == null ? '<spring:message code="meal.createMeal"/>' : '<spring:message code="meal.edit"/>'}</h2>
+    <h2><spring:message code="meal.${meal.id == null ? 'createMeal' : 'edit'}"/></h2>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
     <form method="post" action="${pageContext.request.contextPath}/meals">
         <input type="hidden" name="id" value="${meal.id}">
