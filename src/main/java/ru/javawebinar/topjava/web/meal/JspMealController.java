@@ -27,7 +27,7 @@ public class JspMealController extends AbstractMealController {
         super(service);
     }
 
-    @GetMapping("")
+    @GetMapping
     public String getAll(Model model) {
         model.addAttribute("meals", super.getAll());
         return "meals";
@@ -63,7 +63,7 @@ public class JspMealController extends AbstractMealController {
         return "mealForm";
     }
 
-    @PostMapping("")
+    @PostMapping
     public String create(HttpServletRequest request) {
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
