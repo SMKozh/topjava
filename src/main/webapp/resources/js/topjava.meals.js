@@ -60,7 +60,7 @@ $(function () {
                 ]
             ],
             "createdRow": function (row, data, dataIndex) {
-                data.excess ? $(row).attr("data-meal-excess", true) : $(row).attr("data-meal-excess", false);
+                $(row).attr("data-meal-excess", data.excess);
             }
         })
     );

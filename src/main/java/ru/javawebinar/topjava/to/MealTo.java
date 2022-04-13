@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.to;
 
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -23,7 +22,7 @@ public class MealTo extends BaseTo {
 
     @Range(min = 10, max = 5000)
     @NotNull
-    private int calories = 0;
+    private int calories;
 
     private boolean excess;
 
@@ -48,8 +47,8 @@ public class MealTo extends BaseTo {
         this.description = description;
     }
 
-    public void setCalories(String calories) {
-        this.calories = StringUtils.hasLength(calories) ? Integer.parseInt(calories) : 0;
+    public void setCalories(int calories) {
+        this.calories = calories;
     }
 
     public void setExcess(boolean excess) {

@@ -34,6 +34,11 @@
                 <bean class="ru.javawebinar.topjava.web.converter.DateTimeFormatters.LocalDateFormatter"/>
             </set>
         </property>
+        <property name="converters">
+            <set>
+                <bean class="ru.javawebinar.topjava.web.converter.StringToIntConverter"/>
+            </set>
+        </property>
     </bean>
 
     <context:component-scan base-package="ru.javawebinar.**.web"/>

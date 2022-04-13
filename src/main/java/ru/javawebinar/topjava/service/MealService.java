@@ -49,9 +49,9 @@ public class MealService {
     @Transactional
     public void update(MealTo mealTo, int userId) {
         Assert.notNull(mealTo, "meal must not be null");
-        Meal meal = repository.get(mealTo.getId(), userId);
-        Meal updatedMeal = MealsUtil.updateFromTo(meal, mealTo);
-        checkNotFoundWithId(repository.save(updatedMeal, userId), meal.id());
+        Meal updatedMeal = MealsUtil.createNewFromTo(mealTo);
+        updatedMeal.setId(mealTo.getId());
+        checkNotFoundWithId(repository.save(updatedMeal, userId), updatedMeal.id());
     }
 
     public Meal create(Meal meal, int userId) {
